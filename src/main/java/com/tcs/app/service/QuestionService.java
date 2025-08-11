@@ -5,9 +5,13 @@ import com.tcs.app.dto.QuestionRequestDto;
 import com.tcs.app.dto.QuestionResponseDto;
 import com.tcs.app.model.Question;
 import com.tcs.app.repositories.QuestionRepository;
+import com.tcs.app.utils.CursorUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -32,4 +36,25 @@ public class QuestionService implements  IQuestionService{
                 .doOnSuccess(response -> System.out.println("Question created successfully: " + response))
                 .doOnError(error -> System.out.println("Error creating question: " + error));
     }
+
+    @Override
+    public Flux<QuestionResponseDto> getAllQuestions(String cursor, int size) {
+        Pageable pageable = PageRequest.of(0, size);
+
+        if(!CursorUtils.isValidCursor(cursor)){
+            return questionRepository.findTop10ByOrderByCreatedAtAsc()
+                    .take(size)
+                    .map(QuestionAdapter::toQuestionResponseDto)
+                    .doOnError(error->System.out.println("Error fetching question : "+error))
+                    .doOnComplete(()->System.out.println("Question fetched sucessfully"));
+        }else{
+            LocalDateTime cursorTImeStamp = CursorUtils.parseCursor(cursor);
+            return questionRepository.findByCreatedAtGreaterThanOrderByCreatedAtAsc(cursorTImeStamp, pageable)
+                    .map(QuestionAdapter::toQuestionResponseDto)
+                    .doOnError(error->System.out.println("Error fetching question : "+error))
+                    .doOnComplete(()->System.out.println("Question fetched sucessfully"));
+
+        }
+    }
+
 }

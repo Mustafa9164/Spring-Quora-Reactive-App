@@ -5,6 +5,7 @@ import com.tcs.app.dto.QuestionResponseDto;
 import com.tcs.app.service.IQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -19,5 +20,13 @@ public class QuestionController {
         return iQuestionService.createQuestion(questionRequestDto)
                 .doOnSuccess(response -> System.out.println("Question created successfully: " + response))
                 .doOnError(error -> System.out.println("Error creating question: " + error));
+    }
+
+    @GetMapping("/getAll")
+    public Flux<QuestionResponseDto> getAllQuestion( @RequestParam(required = false) String cursor,
+                                                     @RequestParam(defaultValue = "10") int size){
+        return  iQuestionService.getAllQuestions(cursor,size)
+                .doOnError(error -> System.out.println("Error fetching questions: " + error))
+                .doOnComplete(() -> System.out.println("Questions fetched successfully"));
     }
 }
