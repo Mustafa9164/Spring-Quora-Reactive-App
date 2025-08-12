@@ -57,4 +57,12 @@ public class QuestionService implements  IQuestionService{
         }
     }
 
+    @Override
+    public Flux<QuestionResponseDto> searchQuestion(String searchTerm, int offset, int page) {
+        return questionRepository.findByTitleOrContentContainingIgnoreCase(searchTerm,PageRequest.of(offset,page))
+                .map(QuestionAdapter::toQuestionResponseDto)
+                .doOnError(error -> System.out.println("Error searching questions: " + error))
+                .doOnComplete(() -> System.out.println("Questions searched successfully"));
+    }
+
 }

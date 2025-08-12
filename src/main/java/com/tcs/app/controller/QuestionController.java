@@ -29,4 +29,13 @@ public class QuestionController {
                 .doOnError(error -> System.out.println("Error fetching questions: " + error))
                 .doOnComplete(() -> System.out.println("Questions fetched successfully"));
     }
+
+    @GetMapping
+    public Flux<QuestionResponseDto> searchQuestions(
+        @RequestParam String query,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "0") int size
+    ){
+        return  iQuestionService.searchQuestion(query,page,size);
+    }
 }
