@@ -30,6 +30,16 @@ public class QuestionController {
                 .doOnComplete(() -> System.out.println("Questions fetched successfully"));
     }
 
+    @GetMapping("/{id}")
+    public Mono<QuestionResponseDto> getQuestionById(@PathVariable String id){
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> deleteQuestionById(@PathVariable String id){
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
     @GetMapping
     public Flux<QuestionResponseDto> searchQuestions(
         @RequestParam String query,
@@ -37,5 +47,13 @@ public class QuestionController {
         @RequestParam(defaultValue = "0") int size
     ){
         return  iQuestionService.searchQuestion(query,page,size);
+    }
+
+    @GetMapping("/tag/{tag}")
+    public Flux<QuestionResponseDto> getQuestionByTag(@PathVariable String tag,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size
+                                                      ){
+        throw new UnsupportedOperationException("not implemented");
     }
 }
