@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class Question {
 
     @Id
-    private int id;
+    private String id;
 
     @NotBlank(message = "Title is required")
     @Size(min = 10, max = 100, message = "Title must be between 10 and 100 characters")
@@ -31,6 +31,8 @@ public class Question {
     @NotBlank(message = "Content is required")
     @Size(min = 10, max = 1000, message = "Content must be between 10 and 1000 characters")
     private String content;
+
+    private Integer views;
 
     @CreatedDate
     private LocalDateTime createdAt;

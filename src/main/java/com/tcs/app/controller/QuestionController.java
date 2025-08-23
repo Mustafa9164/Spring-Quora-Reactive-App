@@ -32,7 +32,9 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public Mono<QuestionResponseDto> getQuestionById(@PathVariable String id){
-        throw new UnsupportedOperationException("Not implemented");
+        return iQuestionService.getQuestionById(id)
+                .doOnError(error -> System.out.println("Error fetching question: " + error))
+                .doOnSuccess(response -> System.out.println("Question fetched successfully: " + response));
     }
 
     @DeleteMapping("/{id}")
